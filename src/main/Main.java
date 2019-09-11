@@ -49,7 +49,9 @@ public class Main {
             int col;
             do{
                 System.out.println(game.getCurrentPlayer() + ", informe sua jogada (linha e coluna)");
+                System.out.print("Informe a linha:");
                 row = scan.nextInt()-1;
+                System.out.print("Informe a coluna:");
                 col = scan.nextInt()-1;
             }while (!game.placeMark(row, col));
             game.changePlayer();
