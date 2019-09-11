@@ -2,7 +2,7 @@ package main;
 
 import java.util.Scanner;
 
-import game.Board;
+import game.Game;
 
 public class Main {
     public static void main(String[] args)
@@ -18,7 +18,13 @@ public class Main {
         	menu = scan.nextInt();
         	
         	switch(menu) {
-	        	case 1: newGame();
+	        	case 1: 
+	        		System.out.println("Informe o nome do jogador 1:");
+	        		String player1 = scan.next();
+	        		System.out.println("Informe o nome do jogador 2:");
+	        		String player2 = scan.next(); 
+	        		newGame(player1, player2);
+	        		menu = 3;
 	        		break;
 	        	case 2:
 	        		break;
@@ -26,41 +32,36 @@ public class Main {
 	        		break;
         	}
         	
-        }while (menu>0 && menu<4);
+        }while (menu>0 && menu<3);
         
         scan.close();
     }
     
-    public static void newGame() {
+    public static void newGame(String player1, String player2) {
     	Scanner scan = new Scanner(System.in);
-    	Board game = new Board();
-        game.initializeBoard();
+    	Game game = new Game(player1, player2);
+        game.clearBoard();
         
-        do{
+        while(!game.checkForWin() && !game.isBoardFull()){
             System.out.println("TELA DO JOGO - 02 JOGADORES");
             game.printBoard();
             int row;
             int col;
-            do
-            {
-                System.out.println("Player " + game.getCurrentPlayerMark() + ", enter an empty row and column to place your mark!");
+            do{
+                System.out.println(game.getCurrentPlayer() + ", informe sua jogada (linha e coluna)");
                 row = scan.nextInt()-1;
                 col = scan.nextInt()-1;
-            }
-            while (!game.placeMark(row, col));
+            }while (!game.placeMark(row, col));
             game.changePlayer();
         }
-        while(!game.checkForWin() && !game.isBoardFull());
-        if (game.isBoardFull() && !game.checkForWin())
-        {
-            System.out.println("The game was a tie!");
+        
+        if (game.isBoardFull() && !game.checkForWin()){
+            System.out.println("VELHA!");
         }
-        else
-        {
-            System.out.println("Current board layout:");
+        else{
             game.printBoard();
             game.changePlayer();
-            System.out.println(Character.toUpperCase(game.getCurrentPlayerMark()) + " Wins!");
+            System.out.println("O jogador " + game.getCurrentPlayer() + " venceu!");
         }
         scan.close();
     }
