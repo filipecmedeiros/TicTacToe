@@ -1,8 +1,15 @@
 package game;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Random;
 
-public class Game {
+public class Game implements Serializable{
 
     private char[][] board;
     private String [] players;
@@ -135,4 +142,45 @@ public class Game {
         }
         return false;
     }
+    
+    public void save(String directory) {
+		File file = new File(directory);
+		
+		try {
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			FileOutputStream fout = new FileOutputStream(file);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(this);
+			
+			fout.close();
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
+	public static Game decode (String directory) {
+		Game g = null;
+		
+		try {	
+			FileInputStream fin = new FileInputStream(directory);
+			ObjectInputStream ois = new ObjectInputStream(fin);
+			
+			if (fin.available() != 0){
+				g = (Game) ois.readObject();
+			}
+			
+			fin.close();
+			ois.close();
+			
+			
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return g;
+		
+	}
 }
